@@ -353,6 +353,11 @@ int install_package(std::string package_name, bool ignore_question, std::string 
 
     // install depends
     std::cout << "Download depends." << std::endl;
+
+    if (chdir("..")) {
+        return 1;
+    }
+
     for (std::string pack : depends) {
         rc = install_package(pack, true, "");
 
@@ -361,6 +366,12 @@ int install_package(std::string package_name, bool ignore_question, std::string 
             return 1;
         }
     }
+
+    if (chdir(package_name.c_str())) {
+        std::cerr << "Folder for installation wasn't found." << std::endl;
+        return 1;
+    }
+
 
     // build package if opensource (if its not its alr compiled)
     if (is_opensource) {
